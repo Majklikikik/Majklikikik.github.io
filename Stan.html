@@ -8,77 +8,194 @@
     <Meta NAME="Description" CONTENT="Stan erstellt unglaubliche Websiten um nicht arbeiten zu müssen">
     <Meta NAME="Robots" CONTENT="DONT INDEX,DONT FOLLOW,DONT UPVOTE,DONT LIKE,STILL PAY ME ALL UR MONEY">
     <Meta NAME="revisit-after" CONTENT="1 Eternity">
+    <meta charset="UTF-16"> 
  
-    <title>Stans Unglaubliche Websiten</title>
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <title>Stans Unglaubliche Websiten</title> 
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="style/stails.css" />
     <link rel="icon" href="icon.ico" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="bootstraphover/bootstrap-hover-dropdown.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    <style>
+      .affix {
+        top: 0;
+        width: 100%;
+      }
+
+      .affix + .asd{
+        padding-top:70px;
+      }
+    </style>
+
     </head>
 <body>
-    <div id="header">
-    <a href="index.html"> <img src="heada.png" width=100% height=15%/> </a>
+  <div id="header">
+  <a href="Stan.html"> <img src="heada.png" width=100% height=150/> </a>
+  </div> <!-- ze header -->
 
-    </div> <!-- ze header -->
-
-    <div id="menu">
-      <nav class="navbar navbar-default">
-        <div class="container-fluid">
-         <!-- Brand and toggle get grouped for better mobile display -->
-          <div class="navbar-header">
-            <a class="navbar-brand" href="#">Brand</a>
-          </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-              <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-              <li><a href="#">Link</a></li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="#">Separated link</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="#">One more separated link</a></li>
-                </ul>
-              </li>
+  <nav id="navigator" ng-app="menu" ng-controller="myCtrl" ng-init="init()" class="navbar navbar-default">
+    <div class="container-fluid">
+     <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#MainMenu">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Uvod</a>
+      </div>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="MainMenu">
+        <ul class="nav navbar-nav">
+          <li class="dropdown">
+            <a href="#" aria-haspopup="true" aria-expanded="false">Seminare<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="Stan.html">Seminare v nejblizsi dobe</a></li>
+              <li><a href="Stan.html">Nahravky a fotografie ze seminaru</a></li>
+              <li><a href="Stan.html">Bohemia cantat</a></li>
             </ul>
-            <form class="navbar-form navbar-left" role="search">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search">
-              </div>
-              <button type="submit" class="btn btn-default">Submit</button>
-            </form>
-            <ul class="nav navbar-nav navbar-right">
-              <li><a href="#">Link</a></li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li><a href="#">Action</a></li>
-                  <li><a href="#">Another action</a></li>
-                  <li><a href="#">Something else here</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="#">Separated link</a></li>
-                </ul>
-              </li>
+          </li>
+          <li class="dropdown">
+            <a href="#" aria-haspopup="true" aria-expanded="false">Kalendare<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Muj kalendar</a></li>
+              <li><a href="#">Kalendar Spektra</a></li>
             </ul>
-          </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-      </nav>
+          </li>
+          <li class="dropdown">
+            <a href="#" aria-haspopup="true" aria-expanded="false">Moje Sbory<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Ayangena</a></li>
+              <li><a href="#">Hlahol</a></li>
+              <li><a href="#">Spektrum</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <a href="#" aria-haspopup="true" aria-expanded="false">Informace<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Vice o mne</a></li>
+              <li><a href="#">O alikvotnim zpivani</a></li>
+              <li><a href="#">Sborove skladby Pavla Stanka</a></li>
+            </ul>
+          </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#">Pro pratele</a></li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+  </nav>         
+<div class="container-fluid asd" id="content">
+  <form>
+    <div class="form-group">
+      <label for="title">Titul:</label>
+      <input type="text" class="form-control" id="title">
     </div>
-   
-    <div id="content">
-
+    <div class="form-group">
+      <label for="content-text">Text:</label>
+      <div class="btn-group">
+        <button type="button" class="btn btn-default button-sm" id="button-bold" onclick="toggleformatting('<b>','</b>')">B</button>
+      </div>
+      <div class="well" contenteditable="true" style="height:200px" id=contenttoedit></div>
     </div>
-   
-    <div id="futter">
+  </form>
+</div>
+<script>
+$('#button-bold').on('click',function(){addformatting(1,2);})
+function toggleformatting(t1,t2){
+  alert(""+getCaretCharacterOffsetWithin($('#contenttoedit')));
+  alert(sometext());
+}
 
-    </div>
-   
+function sometext(){return"ASD";}
+function getCaretCharacterOffsetWithin(element) {
+    var caretOffset = 0;
+    var doc = element.ownerDocument || element.document;
+    var win = doc.defaultView || doc.parentWindow;
+    var sel;
+    if (typeof win.getSelection != "undefined") {
+        sel = win.getSelection();
+        if (sel.rangeCount > 0) {
+            var range = win.getSelection().getRangeAt(0);
+            var preCaretRange = range.cloneRange();
+            preCaretRange.selectNodeContents(element);
+            preCaretRange.setEnd(range.endContainer, range.endOffset);
+            caretOffset = preCaretRange.toString().length;
+        }
+    } else if ( (sel = doc.selection) && sel.type != "Control") {
+        var textRange = sel.createRange();
+        var preCaretTextRange = doc.body.createTextRange();
+        preCaretTextRange.moveToElementText(element);
+        preCaretTextRange.setEndPoint("EndToEnd", textRange);
+        caretOffset = preCaretTextRange.text.length;
+    }
+    return caretOffset;
+}
+function getSelection()
+{
+    var savedRange;
+    if(window.getSelection && window.getSelection().rangeCount > 0) //FF,Chrome,Opera,Safari,IE9+
+    {
+        savedRange = window.getSelection().getRangeAt(0).cloneRange();
+    }
+    else if(document.selection)//IE 8 and lower
+    { 
+        savedRange = document.selection.createRange();
+    }
+    return savedRange;
+}
 
-   
+  var men= angular.module('menu',[]);
+  men.controller('myCtrl', function($scope){
+    $scope.act="active"
+    $scope.init=function(){
+      $scope.act='active'
+      $scope.fixxxer='Start'
+      $scope.wid=$(window).width();
+      $scope.aff=$('#navigator').height();
+      $scope.test=""
+    }
+  })
+
+  var scope =  $('#navigator').scope();
+
+  $(window).on("resize",function(){
+    var scope =  $('#navigator').scope();
+    scope.$apply(function(){scope.aff=$(window).width();})
+    if ($(window).width()<750){
+      $(window).off('.affix');
+      $("#navigator")
+        .removeClass("affix affix-top navbar-fixed-top")
+        .removeData("bs.affix")
+    }
+    else{
+      $('#navigator').affix({offset: {top:150}});}
+  })
+
+  $(document).ready(function(){
+    if ($(window).width()>750){
+      $('#navigator').affix({offset: {top:150}});
+    }
+
+  $('#navigator').on('affixed.bs.affix', function () {
+    var scope =  $('#navigator').scope();
+    $('#navigator').addClass("navbar-fixed-top");
+
+    $('#content').css("padding-top",$('#navigator').height()+21);
+    scope.$apply(function(){scope.aff=$('#navigator').height();})
+  });
+
+  $('#navigator').on('affixed-top.bs.affix', function () {
+    var scope =  $('#navigator').scope();
+    $('#navigator').removeClass("navbar-fixed-top");
+    $('#content').css("padding-top",0);
+    scope.$apply(function(){scope.aff="20";})
+  });
+  });
+
+</script>
+
 </body>
 </html>
