@@ -97,55 +97,108 @@
       <label for="content-text">Text:</label>
       <div class="btn-group">
         <button type="button" class="btn btn-default button-sm" id="button-bold" onclick="toggleformatting('<b>','</b>')">B</button>
+        <button type="button" class="btn btn-default button-sm" id="button-bold" onclick="fill()">K</button>
+        <button type="button" class="btn btn-default button-sm" id="button-bold" onclick="selectText('contenttoedit')">Select</button>
       </div>
       <div class="well" contenteditable="true" style="height:200px" id=contenttoedit></div>
     </div>
   </form>
 </div>
+<p id="testers">Tester: <br/></p>
 <script>
+function fill(){$('#contenttoedit').html("Some text, some <b> Bold and <i> cursive</b> text </i> some symbols < and > and / and \"  '  &");}
 $('#button-bold').on('click',function(){addformatting(1,2);})
-function toggleformatting(t1,t2){
-  alert(""+getCaretCharacterOffsetWithin($('#contenttoedit')));
-  alert(sometext());
+
+
+function getPositionWithinHtml(positionWithinText){
+var i=0
+var j=0
+var k=positionWithinText
+var text=$('#contenttoedit').html();
+//alert(text);
+for (i=0;i<k;i++){
+  if(text.charAt(j)=='<')
+  {
+    j=text.indexOf('>',j)+1;
+    i--;
+  }
+  else 
+    if (text.charAt(j)=='&')
+    {
+      if  (text.charAt(j+1)=='a'/*&amp*/)
+      {
+        j+=5;
+      }
+      else j+=4;
+    }
+  else
+  {
+    j++;
+  }
+
+}
+return j;
 }
 
-function sometext(){return"ASD";}
-function getCaretCharacterOffsetWithin(element) {
-    var caretOffset = 0;
-    var doc = element.ownerDocument || element.document;
-    var win = doc.defaultView || doc.parentWindow;
-    var sel;
-    if (typeof win.getSelection != "undefined") {
-        sel = win.getSelection();
-        if (sel.rangeCount > 0) {
-            var range = win.getSelection().getRangeAt(0);
-            var preCaretRange = range.cloneRange();
-            preCaretRange.selectNodeContents(element);
-            preCaretRange.setEnd(range.endContainer, range.endOffset);
-            caretOffset = preCaretRange.toString().length;
-        }
-    } else if ( (sel = doc.selection) && sel.type != "Control") {
-        var textRange = sel.createRange();
-        var preCaretTextRange = doc.body.createTextRange();
-        preCaretTextRange.moveToElementText(element);
-        preCaretTextRange.setEndPoint("EndToEnd", textRange);
-        caretOffset = preCaretTextRange.text.length;
-    }
-    return caretOffset;
-}
-function getSelection()
-{
-    var savedRange;
-    if(window.getSelection && window.getSelection().rangeCount > 0) //FF,Chrome,Opera,Safari,IE9+
+
+function toggleformatting(t1,t2){
+
+  var sel=window.getSelection(),range=window.getSelection().getRangeAt(0).cloneRange(),startpos,endpos,addStart,addEnd;
+  $('#testers').html("Tester");
+  var text=$('#contenttoedit').html();    //get a copy of the html in the field
+  var Range=range.cloneRange();
+
+  var preCaretRange = range.cloneRange();
+  preCaretRange.selectNodeContents(document.getElementById("contenttoedit"));    
+  preCaretRange.setEnd(range.endContainer, range.endOffset);    
+  var caretOffset = preCaretRange.toString().length;   
+  endpos=getPositionWithinHtml(caretOffset);    //find the caret (endposition) within the html code
+  preCaretRange = range.cloneRange();
+  preCaretRange.selectNodeContents(document.getElementById("contenttoedit"));    
+  preCaretRange.setEnd(range.startContainer, range.startOffset);    
+  caretOffset = preCaretRange.toString().length;
+  startpos=getPositionWithinHtml(caretOffset);   //fin the caret (startposition) within the html code
+
+  //now, a bunch of if's comes to do the correct operation
+  if (startpos==endpos)
+  {
+    if (text.lastIndexOf(t1,startpos)>text.lastIndexOf(t2,startpos))//startTag came after endtag: add endtag (f.e. UNbold text)
     {
-        savedRange = window.getSelection().getRangeAt(0).cloneRange();
+      $('#contenttoedit').html(text.slice(0,startpos)+t2+text.slice(endpos,text.length))
+      addStart=t2.length;
+      addEnd=addStart;
     }
-    else if(document.selection)//IE 8 and lower
-    { 
-        savedRange = document.selection.createRange();
+    else//set starttage
+    {
+      $('#contenttoedit').html(text.slice(0,startpos)+t1+text.slice(endpos,text.length))
+      addStart=t1.length;
+      addEnd=addStart;
     }
-    return savedRange;
+  }
+
+  /*else if(){
+
+  }*/
+  //$('#contenttoedit').html(text.slice(0,startpos)+t1+text.slice(startpos,endpos)+t2+text.slice(endpos,text.length))
+  /*if (document.selection) {
+            var range = document.body.createTextRange();
+            range.moveToElementText(document.getElementById("contenttoedit"));
+            range.select();
+        } else if (window.getSelection) {
+            var range = document.createRange();
+            range.selectNode(document.getElementById("contenttoedit"));
+            window.getSelection().addRange(range);
+        }*/
+        var el = document.getElementById("contenttoedit");
+var range = document.createRange();
+var sel = window.getSelection();
+range.setStart(el.childNodes[2], 5);
+range.collapse(true);
+sel.removeAllRanges();
+sel.addRange(range);
 }
+
+
 
   var men= angular.module('menu',[]);
   men.controller('myCtrl', function($scope){
