@@ -100,15 +100,114 @@
         <button type="button" class="btn btn-default button-sm" id="button-bold" onclick="fill()">K</button>
         <button type="button" class="btn btn-default button-sm" id="button-bold" onclick="selectText('contenttoedit')">Select</button>
       </div>
-      <div class="well" contenteditable="true" style="height:200px" id=contenttoedit></div>
+      <div class="well" contenteditable="true" style="height:200px" id=contenttoedit>text text text<br>text text text<br>text text text<br></div>
     </div>
   </form>
 </div>
 <p id="testers">Tester: <br/></p>
+
+<button id="button" onclick="setCaret()">focus</button>
+
+
+
+
+
+
+
 <script>
+function toggleformatting(t1,t2){
+var deb=$('#testers');
+deb.html("Debug<br/>");
+
+  var sel=window.getSelection(),range=window.getSelection().getRangeAt(0).cloneRange(),startpos,endpos,addStart,addEnd;
+  var endtex;
+  var text=$('#contenttoedit').html();    //get a copy of the html in the field
+//for (x in document.getElementById("contenttoedit").childNodes)
+//      deb.html(deb.html()+document.getElementById("contenttoedit").childNodes[x].textContent+"   "+x+"<br/>");
+  var preCaretRange = range.cloneRange();
+  preCaretRange.selectNodeContents(document.getElementById("contenttoedit"));    
+  preCaretRange.setEnd(range.endContainer, range.endOffset);    
+  endtex = preCaretRange.toString().length;   
+  endpos=getPositionWithinHtml(endtex);    //find the caret (endposition) within the html code
+  preCaretRange = range.cloneRange();
+  preCaretRange.selectNodeContents(document.getElementById("contenttoedit"));    
+  preCaretRange.setEnd(range.startContainer, range.startOffset);    
+  starttex = preCaretRange.toString().length;
+  startpos=getPositionWithinHtml(starttex);   //find the caret (startposition) within the html code
+  //now, a bunch of if's comes to do the correct operation
+
+  if (startpos==endpos) //no text is selected
+  {
+    //alert(text);
+    //alert(startpos);
+    //alert('Index: '+text.indexOf('</b>',startpos-1))
+    var n=range.endContainer.parentNode;
+    var m=findNodeIndex(n,range.endContainer)+1;
+    var el = document.getElementById("contenttoedit");
+    var EndNodeIndex=findNodeIndex(range.endContainer.parentNode,range.endContainer);
+    deb.html(deb.html()+EndNodeIndex+"<br/>");
+    deb.html(deb.html()+range.endContainer+"   "+range.endContainer.textContent+"<br/>");
+    deb.html(deb.html()+range.endContainer.parentNode+"   "+range.endContainer.parentNode.textContent+"<br/>");
+    if (text.lastIndexOf(t1,startpos)>text.lastIndexOf(t2,startpos))//startTag came after endtag: add endtag (f.e. UNbold text)
+    {
+      if (!endTagIsNext(text,t2,startpos))
+        $('#contenttoedit').html(text.slice(0,startpos)+t2+t1+text.slice(endpos,text.length));  //adds the two tags, if the endTag wouldn't be the next tag. If he is, sets the position behind him
+      for (x in document.getElementById("contenttoedit").childNodes)
+      deb.html(deb.html()+document.getElementById("contenttoedit").childNodes[x].textContent+"   "+x+"<br/>");
+      for (x in n.childNodes)
+      deb.html(deb.html()+document.getElementById("contenttoedit").childNodes[x].textContent+"   "+x+"<br/>");
+      deb.html(deb.html()+"EndContainerContent:"+range.endContainer.textContent+"<br/>");
+      deb.html(deb.html()+"True Content:"+n.childNodes[m].textContent+"<br/>");
+      range.setStart(range.endContainer,10);
+    }
+    else //set starttags
+    {
+            range.setStart(range.endContainer.parentNode.childNodes[findNodeIndex(range.endContainer.parentNode,range.endContainer)],0);
+            deb.html(deb.html()+"EndContainerContent:"+range.endContainer.textContent+"<br/>");
+            deb.html(deb.html()+"True Content:"+n.childNodes[m].textContent+"<br/>");
+      if (!endTagIsNext(text,t1,startpos))
+        $('#contenttoedit').html(text.slice(0,startpos)+t1+t2+text.slice(endpos,text.length));  //adds the two tags, if the startTag wouldn't be the next tag. If he is, sets the position behind him
+      deb.html(deb.html()+"True Content:"+n.childNodes[m].textContent+"<br/>");
+      range.setStart(n.childNodes[m],0);
+      range.setEnd(n.childNodes[m],0);
+      range.collapse(true);
+
+
+    }
+   //for (x in el.childNodes)
+   //   deb.html(deb.html()+el.childNodes[x].textContent+"   "+x+"<br/>");
+    sel.removeAllRanges();
+    sel.addRange(range);
+    el.focus();
+     
+}
+  /*else if(){
+
+  }*/
+  //$('#contenttoedit').html(text.slice(0,startpos)+t1+text.slice(startpos,endpos)+t2+text.slice(endpos,text.length))
+      
+}
+
+function findNodeIndex(parentNode,childNode){
+var i=0;
+for (i in parentNode.childNodes)
+  if (parentNode.childNodes[i]==childNode) return i;
+return -1;
+}
+
+function endTagIsNext(text,endtag,position){
+  position++;
+  while (text.charAt(position)=='<')
+    position=text.indexOf(">",position)+1;
+  return (text.indexOf(endtag,position-1)==position);
+}
+
+
+
+
+
 function fill(){$('#contenttoedit').html("Some text, some <b> Bold and <i> cursive</b> text </i> some symbols < and > and / and \"  '  &");}
 $('#button-bold').on('click',function(){addformatting(1,2);})
-
 
 function getPositionWithinHtml(positionWithinText){
 var i=0
@@ -125,78 +224,18 @@ for (i=0;i<k;i++){
   else 
     if (text.charAt(j)=='&')
     {
-      if  (text.charAt(j+1)=='a'/*&amp*/)
-      {
-        j+=5;
-      }
-      else j+=4;
+      j=text.indexOf(';',j)+1;
     }
   else
   {
     j++;
   }
-
 }
 return j;
 }
 
 
-function toggleformatting(t1,t2){
 
-  var sel=window.getSelection(),range=window.getSelection().getRangeAt(0).cloneRange(),startpos,endpos,addStart,addEnd;
-  $('#testers').html("Tester");
-  var text=$('#contenttoedit').html();    //get a copy of the html in the field
-  var Range=range.cloneRange();
-
-  var preCaretRange = range.cloneRange();
-  preCaretRange.selectNodeContents(document.getElementById("contenttoedit"));    
-  preCaretRange.setEnd(range.endContainer, range.endOffset);    
-  var caretOffset = preCaretRange.toString().length;   
-  endpos=getPositionWithinHtml(caretOffset);    //find the caret (endposition) within the html code
-  preCaretRange = range.cloneRange();
-  preCaretRange.selectNodeContents(document.getElementById("contenttoedit"));    
-  preCaretRange.setEnd(range.startContainer, range.startOffset);    
-  caretOffset = preCaretRange.toString().length;
-  startpos=getPositionWithinHtml(caretOffset);   //fin the caret (startposition) within the html code
-
-  //now, a bunch of if's comes to do the correct operation
-  if (startpos==endpos)
-  {
-    if (text.lastIndexOf(t1,startpos)>text.lastIndexOf(t2,startpos))//startTag came after endtag: add endtag (f.e. UNbold text)
-    {
-      $('#contenttoedit').html(text.slice(0,startpos)+t2+text.slice(endpos,text.length))
-      addStart=t2.length;
-      addEnd=addStart;
-    }
-    else//set starttage
-    {
-      $('#contenttoedit').html(text.slice(0,startpos)+t1+text.slice(endpos,text.length))
-      addStart=t1.length;
-      addEnd=addStart;
-    }
-  }
-
-  /*else if(){
-
-  }*/
-  //$('#contenttoedit').html(text.slice(0,startpos)+t1+text.slice(startpos,endpos)+t2+text.slice(endpos,text.length))
-  /*if (document.selection) {
-            var range = document.body.createTextRange();
-            range.moveToElementText(document.getElementById("contenttoedit"));
-            range.select();
-        } else if (window.getSelection) {
-            var range = document.createRange();
-            range.selectNode(document.getElementById("contenttoedit"));
-            window.getSelection().addRange(range);
-        }*/
-        var el = document.getElementById("contenttoedit");
-var range = document.createRange();
-var sel = window.getSelection();
-range.setStart(el.childNodes[2], 5);
-range.collapse(true);
-sel.removeAllRanges();
-sel.addRange(range);
-}
 
 
 
