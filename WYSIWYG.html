@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-16"> 
+ 
+    <title>WYSINWYG</title> 
+    <link rel="icon" href="icon.ico" />
+    <script src="jquery.min.js"></script>
+    <script src="bootstraphover/angular.min.js"></script>
+    </head>
+<body>
+    <button type="button" onclick="toggleformatting('<b>','</b>')">B</button>
+    <button type="button" onclick="fill()">K</button>
+    <button type="button" onclick="alert($('#contenttoedit').html());">Select</button>
+    <button type="button" onclick="$('#contenttoedit').html($('#htmlinput').text())">Set Html</button>
+    <button type="button" onclick="$('#htmlinput').text($('#contenttoedit').html())">Set Text</button>
+      <div contenteditable="true" style="height:200px" id=contenttoedit style="background:grey;">text text text<br>text text text<br>text text text<br></div>
+    <div contenteditable="true" id="htmlinput" style="background:yellow; height:200px">Write HTML</div>
+  
+<p id="testers">Tester: <br/></p>
+
+
+
+
+<script>
+function toggleformatting(t1,t2){
+var deb=$('#testers');
+deb.html("Debug<br/>");
+bug("Stuff");
+cont=document.getElementById("contenttoedit");
+for (x in cont.childNodes) 
+  bug(cont.childNodes[x]+"   |   "+cont.childNodes[x].textContent);
+  bug("---------------------------------");
+  var sel=window.getSelection(),range=window.getSelection().getRangeAt(0).cloneRange(),startpos,endpos,addStart,addEnd;
+  var endtex;
+  var text=$('#contenttoedit').html();    //g^et a copy of the html in the field
+
+  var preCaretRange = range.cloneRange();
+  preCaretRange.selectNodeContents(document.getElementById("contenttoedit"));    
+  preCaretRange.setEnd(range.endContainer, range.endOffset);    
+  endtex = preCaretRange.toString().length;   
+  endpos=getPositionWithinHtml(endtex);    //find the caret (endposition) within the html code
+  bug(countTags(range.endContainer.parentNode.parentNode.parentNode));
+  preCaretRange = range.cloneRange();
+  preCaretRange.selectNodeContents(document.getElementById("contenttoedit"));    
+  preCaretRange.setEnd(range.startContainer, range.startOffset);    
+  starttex = preCaretRange.toString().length;
+  startpos=getPositionWithinHtml(starttex);   //find the caret (startposition) within the html code
+  //now, a bunch of if's comes to do the correct operation
+
+  if (startpos==endpos&&false) //no text is selected
+  {
+    var nodetree=new Array;
+    var childCount=new Array;
+    var treeCounter=-1;
+    var p=range.endContainer;
+    while (p.parentNode!=null){
+      treeCounter++;
+      nodetree[treeCounter]=findNodeIndex(p.parentNode,p);
+      childCount[treeCounter]=childNodeCount(p.parentNode);
+      p=p.parentNode;
+      bug(nodetree[treeCounter]);
+    }
+    writeNodeTree(p.childNodes[1].childNodes[2].childNodes[7],"");
+    bug("A");
+    var s=range.endContainer.parentNode.parentNode;
+    var n=range.endContainer.parentNode;
+    var m=findNodeIndex(n,range.endContainer);
+    var o=range.endOffset;
+    m++;
+    if (text.lastIndexOf(t1,startpos)>text.lastIndexOf(t2,startpos))//startTag came after endtag: add endtag (f.e. UNbold text)
+    {
+   //   if (!endTagIsNext(text,t2,startpos)){
+        $('#contenttoedit').html(text.slice(0,startpos)+t2+t1+text.slice(endpos,text.length));  //adds the two tags, if the endTag wouldn't be the next tag. If he is, sets the position behind him
+        for (x in nodetree)
+        {
+    
+          if (childCount[treeCounter-x]<childNodeCount(p)){
+            var noud= document.createTextNode("");
+            p.insertBefore(noud,p.childNodes[++nodetree[treeCounter-x]]);
+            p=p.childNodes[nodetree[treeCounter-x]];
+            range.setStart(p,0);
+            range.setEnd(p,0);
+            if (p.parentNode.childNodes[++nodetree[treeCounter-x]].textContent=="")
+              p.parentNode.removeChild(p.parentNode.childNodes[nodetree[treeCounter-x]]);
+            break;
+          }
+        //  if (x==2)
+        //  writeNodeTree(p,"");
+          p=p.childNodes[nodetree[treeCounter-x]];
+        }
+    //  }    
+      /*else{
+
+      }*/
+    }
+    else //set starttags
+    {
+      if (!endTagIsNext(text,t1,startpos)){
+        $('#contenttoedit').html(text.slice(0,startpos)+t1+t2+text.slice(endpos,text.length));  //adds the two tags, if the startTag wouldn't be the next tag. If he is, sets the position behind him
+
+      }
+      range.setStart(n.childNodes[m],0);
+    range.setEnd(n.childNodes[m],0);
+
+
+    }
+   //for (x in el.childNodes)
+   //   deb.html(deb.html()+el.childNodes[x].textContent+"   "+x+"<br/>");
+ //  deb.html(deb.html()+"FINISHED<br/>");
+    range.collapse(true);
+    sel.removeAllRanges();
+  //  deb.html(deb.html()+"FINISHED<br/>");
+    sel.addRange(range);
+//    deb.html(deb.html()+"FINISHED<br/>");
+    $('#contenttoedit').focus();
+
+     
+}
+  /*else if(){
+
+  }*/
+  //$('#contenttoedit').html(text.slice(0,startpos)+t1+text.slice(startpos,endpos)+t2+text.slice(endpos,text.length))
+      
+}
+
+function childNodeCount(node){
+  var a=0;
+  for (var cnode=node.firstChild; cnode; cnode=cnode.nextSibling)
+a++;
+return a;
+}
+
+function bug(stsring){
+  deb=$('#testers');
+  deb.html(deb.html()+stsring+"<br/>");
+}
+
+function findNodeIndex(parentNode,childNode){
+var i=0;
+for (i in parentNode.childNodes)
+  if (parentNode.childNodes[i]==childNode) return i;
+return -1;
+}
+
+function endTagIsNext(text,endtag,position){
+  position++;
+  while (text.charAt(position)=='<')
+    position=text.indexOf(">",position)+1;
+  return (text.indexOf(endtag,position-1)==position);
+}
+
+
+
+
+
+function fill(){$('#contenttoedit').html("Some text, some <b> Bold and <i> cu<u>rsive</u></b> text </i> some symbols < and > and / and \"  '  &");}
+$('#button-bold').on('click',function(){addformatting(1,2);})
+
+function countTagsEmpty(node){//counts tags in an EMPTY (no text) node, for example an empty "bold" node (<b></b>)
+  var tags=0;
+  if (node.hasChildNodes()){
+    for (x in node.childNodes)
+      tags+=countTags(node.childNodes[x]);
+  }
+  if (node.nodeType!=3)
+    tags+=2;
+  return tags;  
+}
+
+function countTags(node){//counts tags from the last char in the node till the end (so for <b>Some <i> text</i></b> it returns 2)
+  bug(node.textContent);
+  var tags=0;
+  if (node.nodeType!=3)
+    tags++;
+  if (node.hasChildNodes()){
+    var childnode=node.lastChild;
+    while (childnode.textContent==""){
+      tags+=countTagsEmpty(childnode);
+      if (childnode==node.firstChild) break;
+      childnode=childnode.previousSibling;
+    }
+    tags+=countTags(childnode);
+    }
+    return tags;
+}
+
+function previousParentNode(node){
+  if (node!=node.parentNode.firstChild) return node.previousSibling; else return previousParentNode(node.parentNode);
+}
+
+function countTagsComplete(j,node){//counts the length of all tags between the position j in the text and the posiion offset in the node
+var i=0;
+if (node.textContent==""){
+    i+=addTagOffsets(previousParentNode(node));
+    i+=countTagsComplete(node);
+}
+else i+=countTags(node);
+return i;
+}
+function addTagOffsets(j,node,text){
+  i=countTagsComplete(j,node);
+  for (var k=1;k<=i;k++)
+    j=text.indexOf(">",j+1);
+  return j;
+}
+
+function getPositionWithinHtml(positionWithinText/*,node*/){
+var i=0
+var j=0
+var k=positionWithinText
+var text=$('#contenttoedit').html();
+//alert(text);
+for (i=0;i<k;i++){
+  if(text.charAt(j)=='<')
+  {
+    j=text.indexOf('>',j)+1;
+    i--;
+  }
+  else 
+    if (text.charAt(j)=='&')
+    {
+      j=text.indexOf(';',j)+1;
+    }
+  else
+  {
+    j++;
+  }
+}
+//j=addTagOffsets(j,node);
+return j;
+}
+/*
+function getPositionWithinHtml(positionWithinText,node){
+var j= getPositionWithinHtml(positionWithinText)
+boolean b=true;
+if (true)
+  bug("a");
+}*/
+
+function writeNodeTree(node,text){
+  if (node.hasChildNodes())
+    for (x in node.childNodes)
+    {
+      bug(text+node.childNodes[x]+"   |   "+node.childNodes[x].textContent);
+      bug(""+node.childNodes[x].nodeType+"  |  "+(node.childNodes[x].nodeType!=3));
+      writeNodeTree(node.childNodes[x],text+"    ");
+    }
+}
+
+fill();
+
+</script>
+
+</body>
+</html>
